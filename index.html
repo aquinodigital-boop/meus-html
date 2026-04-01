@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Aquinobrasil — Links & Recursos</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Space+Mono:wght@700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#0f0f1a;--card:#1a1a2e;--card-hover:#1e1e35;
+  --accent:#e94560;--teal:#0d9488;--gold:#f59e0b;--purple:#8b5cf6;--green:#10b981;--orange:#f97316;
+  --text:#e2e8f0;--text-mid:#94a3b8;--text-dim:#475569;
+  --border:#1e293b;
+}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;padding:0}
+
+.header{
+  background:linear-gradient(135deg,#1a1a2e 0%,#16213e 100%);
+  border-bottom:3px solid var(--accent);
+  padding:2rem 2rem 1.5rem;
+  position:sticky;top:0;z-index:100;
+  backdrop-filter:blur(20px);
+}
+.header h1{font-family:'Space Mono',monospace;font-size:1.6rem;color:#fff;letter-spacing:-0.5px}
+.header h1 span{color:var(--accent)}
+.header p{font-size:0.85rem;color:var(--text-mid);margin-top:0.3rem}
+
+.container{max-width:800px;margin:0 auto;padding:1.5rem}
+
+.section{margin-bottom:2rem}
+.section-header{
+  display:flex;align-items:center;gap:0.6rem;
+  margin-bottom:0.8rem;padding-bottom:0.5rem;
+  border-bottom:1px solid var(--border);
+}
+.section-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.section-title{font-family:'Space Mono',monospace;font-size:0.85rem;text-transform:uppercase;letter-spacing:1px;color:var(--text-mid)}
+
+.link-card{
+  display:flex;align-items:center;gap:1rem;
+  background:var(--card);border:1px solid var(--border);border-radius:10px;
+  padding:0.9rem 1.1rem;margin-bottom:0.5rem;
+  text-decoration:none;color:var(--text);
+  transition:all 0.2s ease;cursor:pointer;
+  position:relative;overflow:hidden;
+}
+.link-card:hover{background:var(--card-hover);border-color:#334155;transform:translateX(4px)}
+.link-card::before{
+  content:'';position:absolute;left:0;top:0;bottom:0;width:3px;
+  border-radius:0 3px 3px 0;
+}
+
+.link-card .emoji{font-size:1.3rem;flex-shrink:0;width:2rem;text-align:center}
+.link-card .info{flex:1;min-width:0}
+.link-card .name{font-weight:700;font-size:0.95rem;color:#fff}
+.link-card .desc{font-size:0.75rem;color:var(--text-mid);margin-top:0.15rem}
+.link-card .url{font-size:0.65rem;color:var(--text-dim);margin-top:0.2rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.link-card .arrow{color:var(--text-dim);font-size:1.1rem;flex-shrink:0;transition:transform 0.2s}
+.link-card:hover .arrow{transform:translateX(3px);color:var(--text)}
+
+/* Color variants */
+.link-card.accent::before{background:var(--accent)}
+.link-card.teal::before{background:var(--teal)}
+.link-card.gold::before{background:var(--gold)}
+.link-card.purple::before{background:var(--purple)}
+.link-card.green::before{background:var(--green)}
+.link-card.orange::before{background:var(--orange)}
+
+/* Add link section */
+.add-section{
+  background:var(--card);border:2px dashed var(--border);border-radius:12px;
+  padding:1.5rem;margin-top:2rem;
+}
+.add-section h3{font-size:0.9rem;color:var(--text-mid);margin-bottom:1rem;font-family:'Space Mono',monospace;letter-spacing:0.5px}
+.add-row{display:flex;gap:0.5rem;margin-bottom:0.5rem;flex-wrap:wrap}
+.add-row input,.add-row select{
+  background:#0f172a;border:1px solid var(--border);border-radius:6px;
+  padding:0.5rem 0.7rem;color:var(--text);font-family:'DM Sans',sans-serif;font-size:0.85rem;
+}
+.add-row input:focus,.add-row select:focus{outline:none;border-color:var(--accent)}
+.add-row input[name="name"]{flex:1;min-width:120px}
+.add-row input[name="url"]{flex:2;min-width:200px}
+.add-row input[name="desc"]{flex:2;min-width:200px}
+.add-row select{width:110px}
+.btn-add{
+  background:var(--accent);color:#fff;border:none;border-radius:6px;
+  padding:0.5rem 1rem;font-weight:700;font-size:0.85rem;cursor:pointer;
+  font-family:'DM Sans',sans-serif;transition:opacity 0.2s;
+}
+.btn-add:hover{opacity:0.85}
+
+.delete-btn{
+  position:absolute;right:2.5rem;top:50%;transform:translateY(-50%);
+  background:none;border:none;color:var(--text-dim);cursor:pointer;
+  font-size:0.9rem;padding:0.3rem;opacity:0;transition:opacity 0.2s;
+}
+.link-card:hover .delete-btn{opacity:1}
+.delete-btn:hover{color:var(--accent)}
+
+.footer{text-align:center;padding:2rem;color:var(--text-dim);font-size:0.7rem}
+
+@media(max-width:600px){
+  .container{padding:1rem}
+  .add-row{flex-direction:column}
+  .add-row input,.add-row select{width:100%}
+}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>🤖 AQUINO<span>BRASIL</span> — Links & Recursos</h1>
+  <p>Tudo que precisamos num lugar só. Bruna & Cacá — Abril 2026</p>
+</div>
+
+<div class="container" id="app"></div>
+
+<script>
+const DEFAULT_DATA = {
+  sections: [
+    {
+      title: "FERRAMENTAS DE CONTEÚDO",
+      color: "gold",
+      links: [
+        { name: "App AquinoBrasil", desc: "Gerar prompts e imagens com IA", url: "https://aquinobrasil-app.vercel.app/", emoji: "🎨", color: "gold" },
+        { name: "Pippit AI", desc: "Clips rápidos — cola o link e gera", url: "https://www.pippit.ai/ai", emoji: "⚡", color: "green" },
+        { name: "Google Labs Flow", desc: "Vídeos aprimorados com IA", url: "https://labs.google/", emoji: "🎬", color: "purple" },
+        { name: "Gemini", desc: "IA do Google — análises e textos", url: "https://gemini.google.com/app", emoji: "✨", color: "teal" },
+      ]
+    },
+    {
+      title: "PLANILHAS",
+      color: "green",
+      links: [
+        { name: "Planilha Semanal Bruna", desc: "Fotos + clips + uploads da semana", url: "", emoji: "📊", color: "accent" },
+        { name: "Planilha Semanal Cacá", desc: "Fotos + clips + uploads da semana", url: "", emoji: "📊", color: "teal" },
+        { name: "Planilha Tintas Bruna", desc: "10 imagens + 5 clips de tintas Coral", url: "", emoji: "🎨", color: "orange" },
+        { name: "Planilha Tintas Cacá", desc: "10 imagens + 5 clips de tintas Coral", url: "", emoji: "🎨", color: "orange" },
+      ]
+    },
+    {
+      title: "APPS & FERRAMENTAS",
+      color: "accent",
+      links: [
+        { name: "Meli Clips (montador)", desc: "Suba vídeos, escolha trechos, monte", url: "", emoji: "✂️", color: "accent" },
+        { name: "Mercado Livre — Seller", desc: "Painel do vendedor", url: "https://www.mercadolivre.com.br/vendas", emoji: "🛒", color: "teal" },
+        { name: "ML Video Studio", desc: "Publicar clips nos anúncios (celular)", url: "", emoji: "📱", color: "purple" },
+      ]
+    },
+    {
+      title: "COMUNICAÇÃO",
+      color: "teal",
+      links: [
+        { name: "Telegram — ALERTAS", desc: "Urgências: estoque, margem, indisponível", url: "", emoji: "🚨", color: "accent" },
+        { name: "Telegram — CURADORIA", desc: "Itens pra revisar: preço, título", url: "", emoji: "📋", color: "gold" },
+        { name: "Telegram — AGENTES", desc: "Logs das automações", url: "", emoji: "🤖", color: "teal" },
+      ]
+    },
+    {
+      title: "DRIVE",
+      color: "purple",
+      links: [
+        { name: "⭐ MÍDIAS PRODUTOS", desc: "Pasta principal — organizado por MARCA → LINHA → TAM → COR", url: "https://drive.google.com/drive/folders/1kXVY_wsWHjaoR7f1JFdF66BiyI94Q_1P", emoji: "📁", color: "purple" },
+      ]
+    },
+    {
+      title: "APRESENTAÇÃO",
+      color: "accent",
+      links: [
+        { name: "Reunião Abril 2026", desc: "Apresentação completa — agentes, conteúdo, divisão", url: "", emoji: "📑", color: "accent" },
+      ]
+    }
+  ]
+};
+
+// Load from localStorage or use defaults
+function loadData() {
+  try {
+    const saved = localStorage.getItem('aquino_links');
+    if (saved) return JSON.parse(saved);
+  } catch(e) {}
+  return DEFAULT_DATA;
+}
+function saveData(data) {
+  try { localStorage.setItem('aquino_links', JSON.stringify(data)); } catch(e) {}
+}
+
+let data = loadData();
+
+function render() {
+  const app = document.getElementById('app');
+  let html = '';
+
+  data.sections.forEach((sec, si) => {
+    html += `<div class="section">
+      <div class="section-header">
+        <div class="section-dot" style="background:var(--${sec.color})"></div>
+        <div class="section-title">${sec.title}</div>
+      </div>`;
+
+    sec.links.forEach((link, li) => {
+      const hasUrl = link.url && link.url.trim();
+      const tag = hasUrl ? 'a' : 'div';
+      const href = hasUrl ? ` href="${link.url}" target="_blank" rel="noopener"` : '';
+      html += `<${tag} class="link-card ${link.color}"${href}>
+        <div class="emoji">${link.emoji}</div>
+        <div class="info">
+          <div class="name">${link.name}</div>
+          <div class="desc">${link.desc}</div>
+          ${hasUrl ? `<div class="url">${link.url}</div>` : '<div class="url" style="color:var(--accent)">⚠ link pendente — edite abaixo</div>'}
+        </div>
+        <button class="delete-btn" onclick="event.preventDefault();event.stopPropagation();removeLink(${si},${li})" title="Remover">✕</button>
+        ${hasUrl ? '<div class="arrow">→</div>' : ''}
+      </${tag}>`;
+    });
+    html += '</div>';
+  });
+
+  // Add link form
+  html += `<div class="add-section">
+    <h3>+ ADICIONAR LINK</h3>
+    <div class="add-row">
+      <input name="name" placeholder="Nome (ex: TopView AI)" id="add-name">
+      <input name="url" placeholder="URL (ex: https://...)" id="add-url">
+    </div>
+    <div class="add-row">
+      <input name="desc" placeholder="Descrição curta" id="add-desc">
+      <select id="add-section">
+        ${data.sections.map((s,i) => `<option value="${i}">${s.title}</option>`).join('')}
+      </select>
+      <select id="add-color">
+        <option value="accent">Vermelho</option>
+        <option value="teal">Verde</option>
+        <option value="gold">Amarelo</option>
+        <option value="purple">Roxo</option>
+        <option value="green">Verde claro</option>
+        <option value="orange">Laranja</option>
+      </select>
+      <button class="btn-add" onclick="addLink()">Adicionar</button>
+    </div>
+  </div>`;
+
+  html += '<div class="footer">Aquinobrasil — Editável localmente. Os dados ficam salvos neste navegador.</div>';
+  app.innerHTML = html;
+}
+
+function addLink() {
+  const name = document.getElementById('add-name').value.trim();
+  const url = document.getElementById('add-url').value.trim();
+  const desc = document.getElementById('add-desc').value.trim();
+  const secIdx = parseInt(document.getElementById('add-section').value);
+  const color = document.getElementById('add-color').value;
+  if (!name) return alert('Preencha o nome');
+  data.sections[secIdx].links.push({ name, url, desc: desc || '', emoji: '🔗', color });
+  saveData(data);
+  render();
+  document.getElementById('add-name').value = '';
+  document.getElementById('add-url').value = '';
+  document.getElementById('add-desc').value = '';
+}
+
+function removeLink(si, li) {
+  if (!confirm('Remover este link?')) return;
+  data.sections[si].links.splice(li, 1);
+  saveData(data);
+  render();
+}
+
+render();
+</script>
+</body>
+</html>

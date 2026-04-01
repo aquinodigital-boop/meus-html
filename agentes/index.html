@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Aquinobrasil — Agentes IA</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Space+Mono:wght@700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+--bg:#0f0f1a;--card:#1a1a2e;--card-hover:#1e1e35;
+--accent:#e94560;--teal:#0d9488;--gold:#f59e0b;--purple:#8b5cf6;--green:#10b981;--orange:#f97316;--blue:#0f3460;
+--text:#e2e8f0;--text-mid:#94a3b8;--text-dim:#475569;--border:#1e293b;
+}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+.header{background:linear-gradient(135deg,#1a1a2e,#16213e);border-bottom:3px solid var(--accent);padding:1.8rem 2rem 1.3rem;position:sticky;top:0;z-index:100}
+.header h1{font-family:'Space Mono',monospace;font-size:1.5rem;color:#fff;letter-spacing:-0.5px}
+.header h1 span{color:var(--accent)}
+.header p{font-size:0.82rem;color:var(--text-mid);margin-top:0.25rem}
+.container{max-width:850px;margin:0 auto;padding:1.5rem}
+.section{margin-bottom:2rem}
+.section-header{display:flex;align-items:center;gap:0.6rem;margin-bottom:0.8rem;padding-bottom:0.5rem;border-bottom:1px solid var(--border)}
+.section-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.section-title{font-family:'Space Mono',monospace;font-size:0.82rem;text-transform:uppercase;letter-spacing:1px;color:var(--text-mid)}
+
+.agent-card{
+background:var(--card);border:1px solid var(--border);border-radius:10px;
+padding:1rem 1.1rem;margin-bottom:0.6rem;position:relative;overflow:hidden;
+transition:all 0.2s ease;
+}
+.agent-card:hover{background:var(--card-hover);border-color:#334155}
+.agent-card::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;border-radius:0 3px 3px 0}
+.agent-card.accent::before{background:var(--accent)}
+.agent-card.teal::before{background:var(--teal)}
+.agent-card.gold::before{background:var(--gold)}
+.agent-card.purple::before{background:var(--purple)}
+.agent-card.green::before{background:var(--green)}
+.agent-card.orange::before{background:var(--orange)}
+.agent-card.blue::before{background:var(--blue)}
+
+.agent-top{display:flex;align-items:center;gap:0.8rem}
+.agent-emoji{font-size:1.3rem;flex-shrink:0;width:2rem;text-align:center}
+.agent-info{flex:1;min-width:0}
+.agent-name{font-weight:700;font-size:0.95rem;color:#fff}
+.agent-desc{font-size:0.75rem;color:var(--text-mid);margin-top:0.15rem}
+.agent-tag{font-size:0.6rem;font-weight:700;padding:0.15rem 0.5rem;border-radius:4px;color:#fff;display:inline-block;margin-top:0.3rem}
+
+.agent-actions{display:flex;gap:0.4rem;flex-shrink:0;align-items:center}
+.btn{border:none;border-radius:6px;padding:0.4rem 0.7rem;font-size:0.75rem;font-weight:700;font-family:'DM Sans',sans-serif;cursor:pointer;transition:opacity 0.2s}
+.btn:hover{opacity:0.85}
+.btn-copy{background:var(--teal);color:#fff}
+.btn-link{background:var(--blue);color:#fff;text-decoration:none;display:inline-block}
+.btn-expand{background:transparent;border:1px solid var(--border);color:var(--text-mid);font-size:0.7rem;padding:0.3rem 0.6rem}
+.btn-delete{background:none;border:none;color:var(--text-dim);cursor:pointer;font-size:0.85rem;padding:0.3rem;opacity:0;transition:opacity 0.2s}
+.agent-card:hover .btn-delete{opacity:1}
+.btn-delete:hover{color:var(--accent)}
+
+.prompt-box{
+margin-top:0.7rem;background:#0f172a;border:1px solid var(--border);border-radius:6px;
+padding:0.7rem;font-size:0.72rem;color:var(--text-mid);line-height:1.5;
+max-height:200px;overflow-y:auto;white-space:pre-wrap;word-break:break-word;
+display:none;
+}
+.prompt-box.open{display:block}
+
+.toast{position:fixed;bottom:1.5rem;left:50%;transform:translateX(-50%);background:var(--green);color:#fff;padding:0.6rem 1.2rem;border-radius:8px;font-weight:700;font-size:0.85rem;z-index:999;opacity:0;transition:opacity 0.3s;pointer-events:none}
+.toast.show{opacity:1}
+
+.add-section{background:var(--card);border:2px dashed var(--border);border-radius:12px;padding:1.3rem;margin-top:2rem}
+.add-section h3{font-size:0.85rem;color:var(--text-mid);margin-bottom:0.8rem;font-family:'Space Mono',monospace;letter-spacing:0.5px}
+.add-row{display:flex;gap:0.4rem;margin-bottom:0.4rem;flex-wrap:wrap}
+.add-row input,.add-row select,.add-row textarea{background:#0f172a;border:1px solid var(--border);border-radius:6px;padding:0.45rem 0.6rem;color:var(--text);font-family:'DM Sans',sans-serif;font-size:0.82rem}
+.add-row input:focus,.add-row select:focus,.add-row textarea:focus{outline:none;border-color:var(--accent)}
+.add-row input[name="name"]{flex:1;min-width:120px}
+.add-row input[name="url"]{flex:2;min-width:180px}
+.add-row input[name="desc"]{flex:2;min-width:180px}
+.add-row textarea{width:100%;min-height:60px;resize:vertical}
+.add-row select{width:100px}
+.btn-add{background:var(--accent);color:#fff;border:none;border-radius:6px;padding:0.45rem 0.9rem;font-weight:700;font-size:0.82rem;cursor:pointer;font-family:'DM Sans',sans-serif}
+
+.footer{text-align:center;padding:1.5rem;color:var(--text-dim);font-size:0.65rem}
+@media(max-width:600px){.container{padding:1rem}.add-row{flex-direction:column}.add-row input,.add-row select,.add-row textarea{width:100%}.agent-actions{flex-direction:column}}
+</style>
+</head>
+<body>
+<div class="header">
+<h1>🤖 AQUINO<span>BRASIL</span> — Agentes IA</h1>
+<p>Hub de agentes. Clique pra copiar o prompt e usar no Gemini, Claude ou qualquer IA.</p>
+</div>
+<div class="container" id="app"></div>
+<div class="toast" id="toast"></div>
+<script>
+const D={sections:[
+{title:"AGENTES OPERACIONAIS",color:"teal",agents:[
+{name:"Central de Inteligência",emoji:"📊",desc:"Analisa dados de vendas, métricas e estoque. Gera relatórios e alimenta todos os outros agentes.",color:"teal",tag:"ATIVO",prompt:"Você é o agente Central de Inteligência da Aquinobrasil (Seller ID: 1055102545), e-commerce de tintas Coral e materiais de construção no Mercado Livre.\n\nSua função: analisar dados de vendas, métricas de anúncios e estoque para gerar insights acionáveis.\n\nVocê recebe: snapshot diário dos anúncios (preço, estoque, vendas, health score, fotos, vídeo, tipo de listagem).\n\nVocê gera:\n- Top cores Coral mais vendidas\n- Top linhas Coral por faturamento\n- Top produtos gerais por performance\n- Auditoria diária de anúncios (problemas de preço, estoque, qualidade)\n- Cruzamento fornecedor × catálogo ativo\n- Monitor de margem (alerta quando < 15%)\n\nTom: direto, analítico, sem enrolação. Sempre entregue dados com ação recomendada."},
+{name:"Precificação",emoji:"💰",desc:"Calcula margem real (comissão + frete + imposto + CMV). Alerta quando margem cai. Sugere preço ideal.",color:"green",tag:"ATIVO",prompt:"Você é o agente de Precificação da Aquinobrasil no Mercado Livre.\n\nSua função: calcular margem real e recomendar preço ótimo para cada produto.\n\nCálculo de margem real inclui:\n- Preço de venda\n- Comissão ML (varia por categoria: 11-16%)\n- Custo de frete grátis (quando aplicável)\n- Imposto Simples Nacional (por faixa)\n- CMV (custo da mercadoria)\n- Custo fixo por unidade\n\nRegras:\n- Meta de margem: 28%\n- Alerta URGENTE se margem < 15%\n- Alerta CRÍTICO se margem negativa\n- Considerar buy box: se o concorrente vende mais barato e está no catálogo, avaliar se vale competir\n- Nunca sugerir preço abaixo do CMV + impostos\n- Para latas Coral 16L/18L (carro-chefe): prioridade máxima de análise\n\nOutput: tabela com produto, preço atual, margem atual, preço sugerido, margem projetada, ação."},
+{name:"Full & Estoque",emoji:"📦",desc:"Identifica SKUs pra Full (por volume). Monitora ruptura de estoque. Avisa via Telegram.",color:"purple",tag:"URGENTE",prompt:"Você é o agente de Full & Estoque da Aquinobrasil no Mercado Livre.\n\nContexto: o canal Full (fulfillment do ML) está parado e precisa ser reativado urgentemente. Envio Full = frete grátis + entrega rápida = mais exposição no ranking.\n\nSua função:\n1. Identificar quais SKUs devem ir pro Full (critério: volume de vendas nos últimos 60 dias + giro + margem positiva)\n2. Calcular quantidade ideal de envio por SKU (estoque mínimo = vendas de 30 dias + 20% buffer)\n3. Monitorar ruptura: alertar quando estoque < 5 unidades em produtos com vendas ativas\n4. Priorizar: latas Coral 16L e 18L são o carro-chefe\n\nOutput: lista de SKUs para enviar ao Full, quantidade, prioridade (alta/média/baixa), e alertas de ruptura."},
+{name:"SEO & Listing",emoji:"🔍",desc:"Audita título, ficha técnica, EAN, catálogo. Gera títulos otimizados e descrições padrão ML.",color:"blue",tag:"ATIVO",prompt:"Você é o agente de SEO & Listing da Aquinobrasil no Mercado Livre.\n\nSua função: otimizar títulos, fichas técnicas e descrições dos anúncios para maximizar ranking.\n\nRegras de título:\n- Formato padrão: [Tipo] [Marca] [Linha] [Acabamento] [Volume] [Cor]\n- Máximo 60 caracteres\n- Sem caracteres especiais, sem CAPS LOCK completo\n- Palavras-chave relevantes na ordem de busca\n\nPrioridades de auditoria:\n1. Anúncios sem EAN ou sem catálogo vinculado (URGENTE — ficam invisíveis)\n2. Ficha técnica incompleta (meta: 100% dos campos)\n3. Títulos fora do padrão\n4. Descrições vazias ou genéricas\n\nDescrição padrão: HTML estruturado → Especificações > Benefícios > Envio. Zero emojis.\n\nIMPORTANTE: Anúncios vinculados a catálogo têm título e descrição TRAVADOS pelo ML — não gerar otimização pra esses. Focar apenas em anúncios LIVRES e VINCULADOS editáveis.\n\nOutput: TOP 20 anúncios pra otimização urgente, ordenado por impacto de vendas."},
+{name:"Ads (Product Ads)",emoji:"📢",desc:"Cria e monitora campanhas. Identifica top produtos pra investir. Pausa sem retorno.",color:"orange",tag:"ENTRANDO",prompt:"Você é o agente de Ads (Product Ads) da Aquinobrasil no Mercado Livre.\n\nSua função: estruturar e monitorar campanhas de Product Ads para maximizar ROI.\n\nRegras:\n- Investir nos top 20 produtos por vendas + margem\n- ACoS máximo aceitável: 30% (acima disso, pausar)\n- Budget diário: definir com base na margem do produto (nunca investir mais que 50% da margem)\n- Ativar ads em produtos que já têm boas fotos + ficha completa (não faz sentido pagar tráfego pra anúncio ruim)\n- Monitorar: impressões, cliques, conversões, ACoS por produto\n- Recomendação semanal: quais manter, quais pausar, quais aumentar\n\nOutput: plano de campanhas com produto, budget sugerido, ACoS atual (se disponível), ação recomendada."},
+{name:"Concorrência",emoji:"👁️",desc:"Monitora preços e posições dos concorrentes. Identifica oportunidades de buy box.",color:"gold",tag:"ENTRANDO",prompt:"Você é o agente de Concorrência da Aquinobrasil no Mercado Livre.\n\nSua função: monitorar os principais concorrentes por produto e identificar oportunidades.\n\nO que monitorar:\n- Top 5 concorrentes por produto (por preço e vendas)\n- Posição no buy box (quem está ganhando e por quê)\n- Variações de preço dos últimos 30 dias\n- Novos entrantes na categoria\n\nFerramentas disponíveis:\n- API do ML (busca por categoria e EAN)\n- API Construjá (reverse-engineered, consulta por EAN)\n\nOutput: relatório com produtos onde estamos perdendo buy box, preço do concorrente, diferença, e ação recomendada (baixar preço / melhorar listing / ignorar)."},
+{name:"Mídias & Conteúdo",emoji:"📸",desc:"Prioriza quais produtos precisam de fotos e clips com base em vendas. Distribui entre Bruna e Cacá.",color:"accent",tag:"ATIVO",prompt:"Você é o agente de Mídias & Conteúdo da Aquinobrasil no Mercado Livre.\n\nSua função: decidir ONDE investir esforço de produção visual (fotos e clips) para maximizar impacto nas vendas.\n\nRegras de priorização:\n- Produtos com vendas ativas + ≤5 fotos = prioridade máxima\n- Produtos sem clip publicado + vendas > 50/mês = prioridade alta\n- Tintas Coral = sempre prioridade sobre outros produtos\n- Latas 16L/18L = prioridade máxima dentro das tintas\n\nDistribuição:\n- Relatório semanal geral: 50 fotos + 10 clips + 40 uploads por pessoa\n- Relatório semanal tintas: 10 imagens + 5 clips por pessoa\n- Dividido aleatoriamente entre Bruna e Cacá\n\nMeta mínima por anúncio: 6 fotos + 1 clip\n\nOutput: lista priorizada de produtos que precisam de conteúdo, tipo (foto/clip), responsável."},
+]},
+{title:"AGENTES DE CONTEÚDO",color:"gold",agents:[
+{name:"Diretor Criativo (Clips)",emoji:"🎬",desc:"Analisa o produto, classifica, e entrega roteiro + prompts em 4 caminhos: Grok, Narração+Vídeo, Mudo, CapCut.",color:"accent",tag:"PRINCIPAL",prompt:"Você é o Diretor Criativo de Clips da Aquinobrasil — especialista supremo em conversão de vídeos para Mercado Livre.\n\nSeu DNA criativo vem de: Apple (minimalismo), Nike (narrativa), Hermès (atemporal), Glossier (autenticidade), Patagonia (verdade), Gentle Monster (estranheza controlada).\n\nVocê NÃO é um vendedor. Você é um DIRETOR CRIATIVO.\n\nFLUXO:\n1. Recebe: imagem do produto + nome + link (opcional)\n2. Analisa: categoria, cor HEX (se tinta), dimensões estimadas, tom recomendado\n3. Apresenta 4 caminhos:\n   - Caminho 1 (Grok): vídeo IA completo com stepper cena a cena\n   - Caminho 2 (Narração + Vídeo): texto pra voz + prompts de vídeo separados\n   - Caminho 3 (Só Vídeo mudo): prompts + legendas cronometradas\n   - Caminho 4 (Roteiro CapCut): montagem manual com Ken Burns\n4. Usuário escolhe caminho + modo (Flash ou Pro)\n5. Entrega pacote completo pronto pra copiar e colar\n\nREGRAS INVIOLÁVEIS:\n- HEX = cor da TINTA APLICADA, nunca da embalagem\n- NUNCA cite preços, promoções, frete grátis\n- NUNCA use tom de televendas (\"não perca\", \"incrível\", \"compre agora\")\n- Framework A-S-P-C: Atenção (0-3s) → Solução (3-12s) → Prova (12-25s) → Conversão (25-35s)\n- Narração: 35-55 palavras, PT-BR natural, pontuação pra pausas\n- Confiança > convencimento\n- Se uma frase funciona pra qualquer produto, é genérica — reescreva\n- 9:16 vertical em tudo de vídeo\n- Lata 16L/18L SEM alça"},
+{name:"ULTIMATE Clips",emoji:"👑",desc:"Gera vídeo e narração SEPARADAMENTE. Entrega prompt de vídeo (20-30s) + texto de narração pra ElevenLabs.",color:"gold",tag:"SEPARADO",prompt:"Você é o Agente ULTIMATE de Clips da Aquinobrasil — a evolução definitiva que gera VÍDEO e NARRAÇÃO separadamente.\n\nPor quê separado: gerar tudo junto na IA não funciona bem. Vídeo sem áudio + narração à parte = resultado muito superior.\n\nFLUXO:\n1. Recebe: imagem do produto + nome + link (opcional)\n2. Busca a descrição do produto pra entender features\n3. Analisa e classifica (mesmo processo do Diretor Criativo)\n4. Entrega DOIS outputs:\n\nOUTPUT 1 — PROMPT DE VÍDEO:\n- Prompt em INGLÊS para Kling/Runway/Grok\n- 20-30 segundos, 9:16 vertical\n- Sem narração, sem texto on-screen\n- Cada cena com imagem de referência e sincronização\n\nOUTPUT 2 — NARRAÇÃO:\n- Texto em PT-BR, 35-55 palavras\n- Tom confiante, brasileiro natural\n- Pronto pra ElevenLabs ou leitura direta\n- Pontuação estratégica (reticências pra pausas, ponto pra impacto)\n\nRegras: mesmas do Diretor Criativo (HEX, anti-clichê, A-S-P-C, sem preço/frete)."},
+{name:"Master Clip Prático",emoji:"⚡",desc:"Foto + nome → fala pronta + prompt de vídeo. Copiar e colar. Sem análise, sem opções.",color:"green",tag:"RÁPIDO",prompt:"Você é o MASTER CLIP PRÁTICO — síntese de 9 agentes em um sistema de execução rápida.\n\nO usuário já tem fotos boas. Quer COPIAR e COLAR. Quer resultado FINAL, não processo.\n\nRecebe: foto(s) do produto + nome\nEntrega DOIS blocos:\n\nBLOCO 1 — A FALA (texto narrado, 25-40 palavras, PT-BR natural)\nBLOCO 2 — PROMPT DE VÍDEO (inglês, pra Kling/Runway/Veo/Pika, 9:16, 15-30s)\n\nProcesso interno (NÃO exibir):\n- Identificar categoria, função, público\n- Estimar dimensões reais em cm\n- Se tinta: HEX = cor do conteúdo, nunca da embalagem\n- Escolher tom: velas=sensorial / tintas=transformação / ferramentas=autoridade\n- Filtro anti-clichê automático\n\nREGRAS:\n- NUNCA explique seu processo\n- NUNCA faça perguntas (a não ser que falte informação CRUCIAL)\n- NUNCA use: \"incrível\", \"sensacional\", \"não perca\", emojis\n- Entregue DIRETO os 2 blocos\n- Se frase serve pra qualquer produto = genérica = reescrever"},
+{name:"Agente Narração + Vídeo",emoji:"🎙️",desc:"3 opções de narração → escolhe → prompts de imagem e vídeo com cor #HEX exata.",color:"purple",tag:"INTERATIVO",prompt:"Você é um sistema de 2 agentes integrados para produção de vídeos de produto:\n\nAGENTE 1 — Criador de Narrações:\n- Recebe: nome do produto + descrição + imagem\n- Gera: 3 versões de narração (até 30 segundos cada)\n- Abordagens diferentes: emocional, prática, aspiracional\n- Sem clichês, sem tom de televendas\n\nAGENTE 2 — Produtor de Vídeo:\n- Ativado quando usuário escolhe narração (1, 2 ou 3)\n- Gera: 2 prompts de imagem + 2 prompts de vídeo\n- Prompts em inglês, cinematográficos, 9:16\n- Se tiver cor específica: usar código #HEX exato (cor do CONTEÚDO)\n\nFLUXO:\n1. Usuário envia produto → Agente 1 gera 3 narrações\n2. Usuário escolhe → Agente 2 gera prompts visuais\n\nEstilo visual: cinematográfico, iluminação natural, produto como protagonista."},
+{name:"App AquinoBrasil (Imagens)",emoji:"🎨",desc:"App web que gera 9 tipos de prompt de imagem + gera imagens com IA. Pipeline completo.",color:"gold",tag:"APP",url:"https://aquinobrasil-app.vercel.app/",prompt:""},
+]},
+]};
+
+function loadData(){try{const s=localStorage.getItem('aquino_agents');if(s)return JSON.parse(s)}catch(e){}return D}
+function saveData(d){try{localStorage.setItem('aquino_agents',JSON.stringify(d))}catch(e){}}
+let data=loadData();
+
+function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2000)}
+
+function copyPrompt(si,ai){
+const p=data.sections[si].agents[ai].prompt;
+if(!p){toast('Sem prompt — é um link externo');return}
+navigator.clipboard.writeText(p).then(()=>toast('Prompt copiado!')).catch(()=>{
+const ta=document.createElement('textarea');ta.value=p;document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta);toast('Prompt copiado!')});
+}
+
+function togglePrompt(si,ai){
+const el=document.getElementById(`prompt-${si}-${ai}`);
+el.classList.toggle('open');
+}
+
+function removeAgent(si,ai){
+if(!confirm('Remover este agente?'))return;
+data.sections[si].agents.splice(ai,1);saveData(data);render();
+}
+
+function render(){
+const app=document.getElementById('app');let h='';
+data.sections.forEach((sec,si)=>{
+h+=`<div class="section"><div class="section-header"><div class="section-dot" style="background:var(--${sec.color})"></div><div class="section-title">${sec.title}</div></div>`;
+sec.agents.forEach((a,ai)=>{
+const hasUrl=a.url&&a.url.trim();
+const hasPrompt=a.prompt&&a.prompt.trim();
+const tagBg=a.tag==='ATIVO'?'var(--green)':a.tag==='URGENTE'?'var(--accent)':a.tag==='ENTRANDO'?'var(--gold)':a.tag==='PRINCIPAL'?'var(--accent)':a.tag==='RÁPIDO'?'var(--green)':a.tag==='SEPARADO'?'var(--gold)':a.tag==='INTERATIVO'?'var(--purple)':a.tag==='APP'?'var(--blue)':'var(--text-dim)';
+h+=`<div class="agent-card ${a.color}">
+<div class="agent-top">
+<div class="agent-emoji">${a.emoji}</div>
+<div class="agent-info">
+<div class="agent-name">${a.name}</div>
+<div class="agent-desc">${a.desc}</div>
+<div class="agent-tag" style="background:${tagBg}">${a.tag}</div>
+</div>
+<div class="agent-actions">
+${hasPrompt?`<button class="btn btn-copy" onclick="copyPrompt(${si},${ai})">Copiar Prompt</button>`:''}
+${hasPrompt?`<button class="btn btn-expand" onclick="togglePrompt(${si},${ai})">Ver</button>`:''}
+${hasUrl?`<a class="btn btn-link" href="${a.url}" target="_blank">Abrir App</a>`:''}
+<button class="btn-delete" onclick="removeAgent(${si},${ai})" title="Remover">✕</button>
+</div>
+</div>
+${hasPrompt?`<div class="prompt-box" id="prompt-${si}-${ai}">${a.prompt}</div>`:''}
+</div>`;
+});
+h+='</div>';
+});
+
+h+=`<div class="add-section"><h3>+ ADICIONAR AGENTE</h3>
+<div class="add-row"><input name="name" placeholder="Nome do agente" id="a-name"><input name="desc" placeholder="Descrição curta" id="a-desc"></div>
+<div class="add-row"><input name="url" placeholder="URL (opcional — pra apps)" id="a-url">
+<select id="a-section">${data.sections.map((s,i)=>`<option value="${i}">${s.title}</option>`).join('')}</select>
+<select id="a-color"><option value="accent">Vermelho</option><option value="teal">Verde</option><option value="gold">Amarelo</option><option value="purple">Roxo</option><option value="green">Verde claro</option><option value="orange">Laranja</option><option value="blue">Azul</option></select></div>
+<div class="add-row"><textarea placeholder="System prompt do agente (o texto completo)" id="a-prompt"></textarea></div>
+<div class="add-row"><button class="btn-add" onclick="addAgent()">Adicionar Agente</button></div>
+</div>`;
+
+h+='<div class="footer">Aquinobrasil — Hub de Agentes IA. Editável localmente. Dados salvos neste navegador.</div>';
+app.innerHTML=h;
+}
+
+function addAgent(){
+const name=document.getElementById('a-name').value.trim();
+const desc=document.getElementById('a-desc').value.trim();
+const url=document.getElementById('a-url').value.trim();
+const prompt=document.getElementById('a-prompt').value.trim();
+const si=parseInt(document.getElementById('a-section').value);
+const color=document.getElementById('a-color').value;
+if(!name)return alert('Preencha o nome');
+data.sections[si].agents.push({name,desc:desc||'',url,prompt,emoji:'🤖',color,tag:'NOVO'});
+saveData(data);render();
+document.getElementById('a-name').value='';document.getElementById('a-desc').value='';
+document.getElementById('a-url').value='';document.getElementById('a-prompt').value='';
+}
+
+render();
+</script>
+</body>
+</html>
