@@ -145,9 +145,9 @@ const DEFAULT_DATA = {
       title: "APPS & FERRAMENTAS",
       color: "accent",
       links: [
-        { name: "Meli Clips (montador)", desc: "Suba vídeos, escolha trechos, monte", url: "https://maquina-clips-ml-production.up.railway.app/", emoji: "✂️", color: "accent" },
+        { name: "Meli Clips (montador)", desc: "Suba vídeos, escolha trechos, monte", url: "", emoji: "✂️", color: "accent" },
         { name: "Mercado Livre — Seller", desc: "Painel do vendedor", url: "https://www.mercadolivre.com.br/vendas", emoji: "🛒", color: "teal" },
-        { name: "ML Video Studio", desc: "Publicar clips nos anúncios (celular)", url: "", emoji: "📱", color: "purple" },
+        { name: "ML Video Studio", desc: "Publicar clips nos anúncios (celular)", url: "https://maquina-clips-ml-production.up.railway.app/", emoji: "📱", color: "purple" },
       ]
     },
     {
@@ -176,7 +176,7 @@ const DEFAULT_DATA = {
 };
 
 // Version control — bump this to force reset localStorage when DEFAULT_DATA changes
-const DATA_VERSION = 4;
+const DATA_VERSION = 5;
 
 // Load from localStorage or use defaults
 function loadData() {
