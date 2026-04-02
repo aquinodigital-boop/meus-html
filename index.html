@@ -175,16 +175,28 @@ const DEFAULT_DATA = {
   ]
 };
 
+// Version control — bump this to force reset localStorage when DEFAULT_DATA changes
+const DATA_VERSION = 2;
+
 // Load from localStorage or use defaults
 function loadData() {
   try {
-    const saved = localStorage.getItem('aquino_links');
-    if (saved) return JSON.parse(saved);
+    const savedVersion = localStorage.getItem('aquino_links_version');
+    if (savedVersion && parseInt(savedVersion) === DATA_VERSION) {
+      const saved = localStorage.getItem('aquino_links');
+      if (saved) return JSON.parse(saved);
+    }
+    // Version mismatch or no version — reset to defaults
+    localStorage.removeItem('aquino_links');
+    localStorage.setItem('aquino_links_version', DATA_VERSION);
   } catch(e) {}
   return DEFAULT_DATA;
 }
 function saveData(data) {
-  try { localStorage.setItem('aquino_links', JSON.stringify(data)); } catch(e) {}
+  try {
+    localStorage.setItem('aquino_links', JSON.stringify(data));
+    localStorage.setItem('aquino_links_version', DATA_VERSION);
+  } catch(e) {}
 }
 
 let data = loadData();
